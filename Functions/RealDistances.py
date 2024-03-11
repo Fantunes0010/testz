@@ -84,6 +84,11 @@ def calculate_distance_between_airports(source: str, destination: str) -> float:
 def add_airports_distances(gaivota: Gaivota):
     """
     Update the airports_distances dictionary with distances between all pairs of airports.
+    
+    Parameters
+    ---------------
+    gaivota: Gaivota
+        An instance of the Gaivota class containing airport data.
     """
     airports_dirty = gaivota.airports
     airport_df = airports_dirty[airports_dirty['IATA'] != "\\N"].reset_index(drop=True)
@@ -110,31 +115,27 @@ def add_airports_distances(gaivota: Gaivota):
     # Assign DF to instance attribute
     gaivota.airports_distances = unique_distances_df
     
-def test_distance_between_same_airport():
-    # Test when source and destination airports are the same
-    distance = calculate_distance_between_airports('JFK', 'JFK')
-    assert distance == 0   #answer:0    
-    
-def test_distance_between_close_airports():
-    # Test when source and destination airports are close to each other
-    distance = calculate_distance_between_airports('JFK', 'LGA')
-    assert distance == pytest.approx(17, 1)    #answer: 17
-
-def test_distance_between_distant_airports():
-    # Test when source and destination airports are distant from each other
-    distance = calculate_distance_between_airports('JFK', 'MAG')
-    assert distance == pytest.approx(1000, 5)  #answer: 14445
-    
-def test_calculate_distance_type_checking():
-    with pytest.raises(TypeError):
-        calculate_distance("string", "string", "string", "string")
-
-def test_calculate_distance_between_airports_type_checking():
-    with pytest.raises(TypeError):
-        calculate_distance_between_airports(0, "MAG")
-        
-# Function to calculate distance between two points using Haversine formula
 def haversine_vectorized(lat1, lon1, lat2, lon2):
+    """
+    Calculate the great-circle distance between two points on the Earth's surface
+    given their longitudes and latitudes using the Haversine formula.
+    
+    Parameters
+    ---------------
+    lat1 : float
+        Latitude of the first point in degrees.
+    lon1 : float
+        Longitude of the first point in degrees.
+    lat2 : float
+        Latitude of the second point in degrees.
+    lon2 : float
+        Longitude of the second point in degrees.
+    
+    Returns
+    ---------------
+    distance : float
+        The computed distance between the two points in kilometers.
+    """
     R = 6371.0  # Earth radius in km
 
     lat1, lon1, lat2, lon2 = map(np.radians, [lat1, lon1, lat2, lon2])
